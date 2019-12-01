@@ -1,0 +1,52 @@
+{
+    "system": {
+        "dataset": "DAGM",
+        "batch_size": 4,
+        "sampling_function": "cornernet",
+
+        "train_split": "traindagm",
+        "val_split": "testdagm",
+
+        "learning_rate": 0.00025,
+        "decay_rate": 10,
+
+        "val_iter": 100,
+
+        "opt_algo": "adam",
+        "prefetch_size": 5,
+
+        "max_iter": 5000,
+        "stepsize": 800,
+        "snapshot": 400,
+
+        "chunk_sizes": [4],
+
+        "data_dir": "./data"  #数据集的根目录
+    },
+    
+    "db": {
+        "rand_scale_min": 0.6,#随机裁剪比例[0.6,0.7,...,1.4]
+        "rand_scale_max": 1.4,
+        "rand_scale_step": 0.1,
+        "rand_scales": null,
+
+        "rand_crop": true,  #随机裁剪
+        "rand_color": true,  #色彩抖动
+
+        "border": 128,  #随机裁剪默认裁剪块的尺寸
+        "gaussian_bump": true,
+        "gaussian_iou": 0.3,
+
+        "input_size": [511, 511],
+        "output_sizes": [[128, 128]],
+
+        "test_scales": [1], #测试图片的缩放比例
+
+        "top_k": 100,
+        "categories": 10,
+        "ae_threshold": 0.5,
+        "nms_threshold": 0.5,
+
+        "max_per_image": 100
+    }
+}

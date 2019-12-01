@@ -1,0 +1,60 @@
+{
+  "system": {
+    "dataset": "myData",  #数据集
+    "batch_size": 4,  #batch_size
+    "sampling_function": "cornernet_saccade",  #数据增强策略
+    "train_split": "traindagm",  #训练集
+    "val_split": "testdagm",     #验证集
+    "learning_rate": 0.00025, #初始学习率
+    "decay_rate": 10,   #学习率衰减因子
+    "val_iter": 100,#每迭代val_iter计算一次val loss
+    "opt_algo": "adam",#优化器
+    "prefetch_size": 5,#队列预取数据量
+    "max_iter": 8000,#训练迭代的总次数
+    "stepsize": 200,  #训练时每迭代stepsize次学习率衰减为原来的1/decay_rate
+    "snapshot": 1000,  #训练每迭代snapshot次保存一次模型参数
+    "chunk_sizes": [
+      4
+    ]  ## 每块GPU上处理的图片数，其和等于batch_size
+  },
+  "db": {
+    "rand_scale_min": 0.5,  #随机裁减比例[0.5,0.6，0.7，...,1.1]
+    "rand_scale_max": 1.1,
+    "rand_scale_step": 0.1,
+    "rand_scales": null,
+    "rand_full_crop": true,# 随机裁剪
+    "gaussian_bump": true, #是否使用二维高斯给出惩罚减少量
+    "gaussian_iou": 0.5, #高斯半径的大小根据object尺寸得到，bounding box 和 gt  box 至少0.5 IoU
+    "min_scale": 16,
+    "view_sizes": [],
+    "height_mult": 31,
+    "width_mult": 31,
+    "input_size": [
+      255,
+      255
+    ],  #网络输入图片的size
+    "output_sizes": [
+      [
+        64,
+        64
+      ]
+    ],#网络输出图片的size
+    "att_max_crops": 30,  #和attention map相关的参数设置
+    "att_scales": [
+      [
+        1,
+        2,
+        4
+      ]
+    ],
+    "att_thresholds": [
+      0.3
+    ], #概率>0.3的location被筛出来
+    "top_k": 12,  ## maximum number of crops to process
+    "num_dets": 12,
+    "categories": 10, #类别数
+    "ae_threshold": 0.3, #测试时，仅处理attention maps上 score > as_threshold=0.3 的locations
+    "nms_threshold": 0.5, #nms的阈值
+    "max_per_image": 100  ## maximum number of objects to predict on a single image
+  }
+}
