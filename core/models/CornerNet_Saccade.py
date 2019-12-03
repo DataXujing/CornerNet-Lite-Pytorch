@@ -73,9 +73,9 @@ class model(saccade_net):
 
         tl_modules = nn.ModuleList([corner_pool(256, TopPool, LeftPool) for _ in range(stacks)])
         br_modules = nn.ModuleList([corner_pool(256, BottomPool, RightPool) for _ in range(stacks)])
-
-        tl_heats = nn.ModuleList([self._pred_mod(10) for _ in range(stacks)])
-        br_heats = nn.ModuleList([self._pred_mod(10) for _ in range(stacks)])
+        # 具体的类别数要修改！！！
+        tl_heats = nn.ModuleList([self._pred_mod(21) for _ in range(stacks)])
+        br_heats = nn.ModuleList([self._pred_mod(21) for _ in range(stacks)])
         for tl_heat, br_heat in zip(tl_heats, br_heats):
             torch.nn.init.constant_(tl_heat[-1].bias, -2.19)
             torch.nn.init.constant_(br_heat[-1].bias, -2.19)

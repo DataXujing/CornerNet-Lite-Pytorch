@@ -245,7 +245,7 @@ def cornernet_saccade(db, nnet, result_dir, debug=False, decode_func=batch_decod
     if not os.path.exists(debug_dir):
         os.makedirs(debug_dir)
 
-    if db.split != "trainval2014":
+    if db.split != "train":
         db_inds = db.db_inds[:500] if debug else db.db_inds
     else:
         db_inds = db.db_inds[:100] if debug else db.db_inds[:5000]
@@ -279,14 +279,17 @@ def cornernet_saccade(db, nnet, result_dir, debug=False, decode_func=batch_decod
     print('average time: {}'.format(timer.average_time))
 
     result_json = os.path.join(result_dir, "results.json")
+    print("预测结果： ")
+    print(result_json)
+    # 我们暂时不需要！！！！
     # detections  = db.convert_to_coco(top_bboxes)
-    detections  = db.convert_to_dagm(top_bboxes)
-    with open(result_json, "w") as f:
-        json.dump(detections, f)
+    # detections  = db.convert_to_dagm(top_bboxes)
+    # with open(result_json, "w") as f:
+    #     json.dump(detections, f)
 
-    cls_ids   = list(range(1, categories + 1))
-    image_ids = [db.image_ids(ind) for ind in db_inds]
-    db.evaluate(result_json, cls_ids, image_ids)
+    # cls_ids   = list(range(1, categories + 1))
+    # image_ids = [db.image_ids(ind) for ind in db_inds]
+    # db.evaluate(result_json, cls_ids, image_ids)
     return 0
 
 def cornernet_saccade_inference(db, nnet, image, decode_func=batch_decode): 

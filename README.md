@@ -23,7 +23,7 @@
 ```
 filename,X1,Y1,X2,Y2,X3,Y3,X4,Y4,type
 ```
-
+<div align='center'>
 <table>
 <thead>
 <tr>
@@ -85,12 +85,14 @@ filename,X1,Y1,X2,Y2,X3,Y3,X4,Y4,type
 </tr>
 </tbody>
 </table>
+</div>
 
 <div align="center">
     <img src="./docs/pic1.png" />
 </div>
 图片名为图片的具体名称，以左上角为零点，X1、Y1为Bounding Box左上角坐标，X2、Y2为Bounding Box右上角坐标，X3、Y3为Bounding Box右下角坐标，X4、Y4为Bounding Box左下角坐标，编码为交通标示对应的编号，如下表所示。
 
+<div align="center">
 <table>
 <thead>
 <tr>
@@ -185,6 +187,7 @@ filename,X1,Y1,X2,Y2,X3,Y3,X4,Y4,type
 </tr>
 </tbody>
 </table>
+</div>
 
 **评分方式**:本次竞赛根据提交结果计算Score作为评分标准；
 
@@ -196,7 +199,7 @@ filename,X1,Y1,X2,Y2,X3,Y3,X4,Y4,type
     <img src="./docs/iou.png" />
 </div>
 
-  
+
 （2）图像识别：
 
 判断图像内容是否匹配是根据图片中汽车道路标志牌名称与候选名称是否一致。
@@ -223,7 +226,6 @@ filename,X1,Y1,X2,Y2,X3,Y3,X4,Y4,type
 
 **1.基于VOC数据的训练数据准备**
 
-TODO
 
 我们修改了原CornerNet支持的COCO数据集标注的.json文件，使其支持.xml的标注及类似于VOC的标注数据和训练集准备结构，最终训练数据会存放在`<CornerNet-Lite dir>/data/`文件夹下,我们新建的数据集名称为`myData`,其文件结构如下：
 
@@ -246,10 +248,32 @@ myData
 
 **2..csv生成.xml**
 
+将基于虚拟仿真环境下的自动驾驶交通标志识别数据集的csv标注文件转换为xml文件:
+
+```
+python3 ./data/myData/csv2xml.py
+```
+
+由于常用的标注数据均是xml或json格式的，所以这一步对于数据集的制作不是必须的。运行后在Annotations文件夹下会生成xml的标注文件。
+
+
 
 **3.解析数据**
 
+`<CornerNet-Lite dir>/core/dbs`下的`myData.py`,是解析数标注数据的关键脚本，这里设置了训练集的标注类别和xml文件的解析，对于训练自己的数据集你需要根据自己的数据集做相应的修改。同时在这里需要修改的还有`<CornerNet-Lite dir>/configs/CornerNet_Saccade.json`的配置文件，这里配置了系统，数据集及网络的相关超参数和默认参数的取值，在训练集的构建过程中，需要修改或创建该配置文件，其详细的配置文件的参数说明可以参考section 4的训练过程的配置文件说明。
 
+注意：同时需要修改`<CornerNet-Lite dir>/core/dbs/__init__.py`文件:
+
+```
+from .coco import COCO
+from .myData import myData
+
+# 数据库名字
+datasets = {
+    "COCO": COCO,
+    "myData":myData
+}
+```
 
 
 ### 3.:rocket:模型准备
@@ -260,8 +284,10 @@ myData
 
 + Python >= 3.5
 + PyTorch 1.0.0
-+ CUDA 10(CUDA 9.0)
++ torchvision 0.2.0
++ CUDA 9.0
 + gcc 4.9.2 or above(因为Corner Pooling是C++实现的)
+
 
 **2.安装依赖包**
 
@@ -307,22 +333,36 @@ cd <CornerNet-Lite dir>/core/external
 make
 ```
 
+> :fire: 我们在GitHub Release提供了编译好的Python3.5的虚拟环境供下载：[CornerNet_Lite](https://github.com/DataXujing/CornerNet-Lite-Pytorch/releases/tag/v1.0)
+
+
 **5.下载预训练的模型**
 
-这里提供了CornerNet,CornerNet-Saccade及CornerNet-Squeeze在COCO数据及上预训练的模型，供下载，GitHub Release的下载地址如下：
+> :fire: 这里提供了CornerNet,CornerNet-Saccade及CornerNet-Squeeze在COCO数据及上预训练的模型，供下载，GitHub Release的下载地址如下：[CornerNet-Saccade](https://github.com/DataXujing/CornerNet-Lite-Pytorch/releases/tag/v2.0)
 
-+ [CornerNet]()
-+ [CornerNet-Saccade]()
-+ [CornerNet-Squeeze]()
 
 这里我们训练的模型是CornerNet-Saccade,我们将CornerNet-Saccade的预训练模型存放在`<CornerNet-Lite dir>/cache/nnet/CornerNet_Saccade/`(注意这里的路径名使用的都是下划线！)
 
 如果想基于其他预训练的模型做迁移学习，请将CornerNet-Squeeze的预训练模型存放在`<CornerNet-Lite dir>/cache/nnet/
 CornerNet_Squeeze/` ; CornerNet预训练的模型存放在`<CornerNet-Lite dir>/cache/nnet/CornerNet/`
 
-同时我们也提供了基于自动驾驶的仿真数据的预训练模型的GitHub Release下载地址，可下载测试代码编译是否正常,下载地址：
+注意把模型路径修改为自己的模型路径
 
-+ [CornerNet_Saccade]()
+```
+# CornerNet
+cfg_path = get_file_path("..", "configs", "CornerNet.json")
+model_path = get_file_path("..", "cache", "nnet", "CornerNet", "CornerNet_500000.pkl")
+
+# CornerNet_Squeeze
+cfg_path = get_file_path("..", "configs", "CornerNet_Squeeze.json")
+model_path = get_file_path("..", "cache", "nnet", "CornerNet_Squeeze", "CornerNet_Squeeze_1000.pkl")
+
+# CornerNet_Saccade(可下载我们预训练的模型)
+cfg_path = get_file_path("..", "configs", "CornerNet_Saccade.json")
+model_path = get_file_path("..", "cache", "nnet", "CornerNet_Saccade", "CornerNet_Saccade_3000.pkl")
+```
+
+> :fire: 我们也提供了基于自动驾驶的仿真数据的预训练模型的GitHub Release下载地址，可下载测试代码编译是否正常,下载地址：[CornerNet_Saccade]()
 
 **6.运行demo.py测试模型编译是否成功**
 
@@ -332,22 +372,47 @@ python3 demo.py
 
 `demo.py`使用CornerNet-Saccade测试demo.jpg，输出结果保存在demo_out.jpg,如果成功则上述模型准备环境已经完成！
 
-注意：本项目仅训练了CornerNet-Saccade，你可以调整`demo.py`测试其他的模型，比如你想训练CornerNet-Squeeze,请修改`demo.py`:
+注意：
+
+1.本项目仅训练了CornerNet-Saccade，你可以调整`demo.py`测试其他的模型，比如你想训练CornerNet-Squeeze,请修改`demo.py`:
 
 ```
-#!/usr/bin/env python
-
 import cv2
-from core.detectors import CornerNet_Squeeze
+from core.detectors import CornerNet_Saccade
+#from core.detectors import CornerNet_Squeeze
 from core.vis_utils import draw_bboxes
-# 替换detector!
-detector = CornerNet_Squeeze()
-image    = cv2.imread("demo.jpg")
+from core.paths import get_file_path
+
+import os
+import pickle
+import pprint
+
+
+detector = CornerNet_Saccade()
+image    = cv2.imread("./demo.jpg")
 
 bboxes = detector(image)
+pprint.pprint(bboxes)
+
+# 为了支持中文显示，对此做了修改
+# 注意修改自己数据集的id2label字典
 image  = draw_bboxes(image, bboxes)
-cv2.imwrite("demo_out.jpg", image)
+cv2.imwrite("./demo_out.jpg", image)
+
 ```
+
+2.修改`<CornerNet-Lite dir>/core/detectors.py`
+
+```
+from .base import Base, load_cfg, load_nnet
+from .paths import get_file_path
+from .config import SystemConfig
+# from .dbs.coco import COCO
+# from .dbs.dagm import DAGM as COCO
+# 修改成自己的数据集处理
+from .dbs.myData import myData as COCO
+```
+
 
 ### 4.:construction:训练过程
 
@@ -359,7 +424,7 @@ cv2.imwrite("demo_out.jpg", image)
 {
   "system": {
     "dataset": "myData",  #数据集
-    "batch_size": 128,    #batch_size
+    "batch_size": 32,    #batch_size
     "sampling_function": "cornernet_saccade",  #数据增强策略
     "train_split": "train",      #训练集
     "val_split": "test",         #验证集
@@ -368,11 +433,11 @@ cv2.imwrite("demo_out.jpg", image)
     "val_iter": 100,             #每迭代val_iter计算一次val loss
     "opt_algo": "adam",          #优化器
     "prefetch_size": 5,          #队列预取数据量
-    "max_iter": 8000,            #训练迭代的总次数
+    "max_iter": 100000,          #训练迭代的总次数
     "stepsize": 200,             #训练时每迭代stepsize次学习率衰减为原来的1/decay_rate
-    "snapshot": 1000,            #训练每迭代snapshot次保存一次模型参数
+    "snapshot": 5000,            #训练每迭代snapshot次保存一次模型参数
     "chunk_sizes": [
-      128
+      32
     ]                            #每块GPU上处理的图片数，其和等于batch_size
   },
   "db": {
@@ -487,8 +552,9 @@ class model(saccade_net):
         hgs = saccade(pre, hg_mods, cnvs, inters, cnvs_, inters_)
         tl_modules = nn.ModuleList([corner_pool(256, TopPool, LeftPool) for _ in range(stacks)])
         br_modules = nn.ModuleList([corner_pool(256, BottomPool, RightPool) for _ in range(stacks)])
-        tl_heats = nn.ModuleList([self._pred_mod(10) for _ in range(stacks)])
-        br_heats = nn.ModuleList([self._pred_mod(10) for _ in range(stacks)])
+        #这路需要修改为自己的类别数，我们这里是21个类别！！！
+        tl_heats = nn.ModuleList([self._pred_mod(21) for _ in range(stacks)])
+        br_heats = nn.ModuleList([self._pred_mod(21) for _ in range(stacks)])
         for tl_heat, br_heat in zip(tl_heats, br_heats):
             torch.nn.init.constant_(tl_heat[-1].bias, -2.19)
             torch.nn.init.constant_(br_heat[-1].bias, -2.19)
@@ -508,11 +574,11 @@ class model(saccade_net):
 训练模型：
 
 ```
+source ./CornerNet_Lite/bin/activate
 python3 trainmyData.py <model>
-
 ```
 
-训练CornerNet-Saccade:
+例如训练CornerNet-Saccade:
 
 ```
 python3 trainmyData.py CornerNet_Saccade
@@ -522,16 +588,16 @@ python3 trainmyData.py CornerNet_Saccade
 
 ### 5.:chart_with_upwards_trend:网络推断过程
 
-TODO
-
-推断网络:
+网络推断:
 
 ```
-# TO DO 修改config.py
-python3 evaluatemyData.py CornerNet_Saccade --testiter 500000 --split <split>
+python3 evaluatemyData.py <model> --testiter <iter> --split <split>
+
+# example
+python3 evaluatemyData.py CornerNet_Saccade --testiter 3000 --split valid
 ```
 
-如果想使用全新的配置文件而不是训练的配置文件进行推断，可以创建一个带有后缀的配置文件（比如：`<model>-<suffix>.json`),此时不需要重新创建`<model>-<suffix>.py`文件。
+注意要修改`<CornerNet-Lite dir>/core/test/CornerNet_Saccade.py`文件，如果想使用全新的配置文件而不是训练的配置文件进行推断，可以创建一个带有后缀的配置文件（比如：`<model>-<suffix>.json`),此时不需要重新创建`<model>-<suffix>.py`文件。
 
 使用新的config文件：
 
@@ -547,7 +613,9 @@ python3 evaluatemyData.py CornerNet --testiter <iter> --split <split> --suffix m
 
 ### 6.:whale:Demo
 
-TODO
+**TODO**
+
+<!-- ![](./demo_out.jpg) -->
 
 ### 7.:tada:致谢
 

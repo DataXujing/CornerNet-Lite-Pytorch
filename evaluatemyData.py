@@ -7,7 +7,7 @@ import pprint
 import argparse
 import importlib
 
-import visdom
+# import visdom
 
 from core.dbs import datasets
 from core.test import test_func
@@ -22,10 +22,10 @@ def parse_args():
     parser.add_argument("cfg_file", help="config file", type=str)
     parser.add_argument("--testiter", dest="testiter",
                         help="test at iteration i",
-                        default=None, type=int)
+                        default=None, type=int)  # 测试的模型参数： 'cfg_file' + '_' + 'testiter' + '.pkl'
     parser.add_argument("--split", dest="split",
                         help="which split to use",
-                        default="validation", type=str)
+                        default="valid", type=str)
     parser.add_argument("--suffix", dest="suffix", default=None, type=str)
     parser.add_argument("--debug", action="store_true")
 
@@ -111,9 +111,9 @@ def main(args):
     # print(train_split)
     # print(args.split)
     split = {
-        "traindagm": train_split,
-        "testdagm": val_split,
-        "testing": test_split
+        "train": train_split,
+        "valid": val_split,
+        "test": test_split
     }[args.split]
 
     print("\033[0;36m loading all datasets(加载所有数据集中)... \033[0m ")

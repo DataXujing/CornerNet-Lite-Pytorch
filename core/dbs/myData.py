@@ -17,7 +17,7 @@ class myData(DETECTION):
         assert split is None or sys_config is not None
         super(myData, self).__init__(db_config)
         # 训练数据存放的基路径
-        self.base_data_path = '/home/xujing/CornerNet_Lite/data/'
+        self.base_data_path = '/home/myuser/xujing/CornerNet_lite_traffic/data/'
         #ImageNet的mean,std
         self._mean    = np.array([0.40789654, 0.44719302, 0.47026115], dtype=np.float32)
         self._std     = np.array([0.28863828, 0.27408164, 0.27809835], dtype=np.float32)
@@ -29,17 +29,17 @@ class myData(DETECTION):
         ], dtype=np.float32)
         
         #class id #替换成自己的
-        self._mydata_cls_ids = [
+        self._myData_cls_ids = [
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12, 13,
             14, 15, 16, 17, 18, 19, 20, 21
         ]
         
         # class name替换成自己的
         self._myData_cls_names = [
-            'Class01', 'Class02', 'Class03', 'Class04', 'Class05', 'Class06', 'Class07', 
-            'Class08', 'Class09', 'Class10','Class11', 'Class12', 'Class12',
-            'Class13', 'Class14', 'Class15''Class16', 'Class17', 'Class18',
-            'Class19', 'Class20','Class21'
+            'class_1', 'class_2', 'class_3', 'class_4', 'class_5', 'class_6', 'class_7', 
+            'class_8', 'class_9', 'class_10','class_11', 'class_12', 
+            'class_13', 'class_14', 'class_15','class_16', 'class_17', 'class_18',
+            'class_19', 'class_20','class_0'
 
         ]
 
@@ -55,13 +55,14 @@ class myData(DETECTION):
             # 数据集的分割
             self._split = {
                 "train": "train",
-                "valid": "valid"
+                "valid": "valid",
+                "test": "test"
             }[split]
 
             # image文件存放的文件夹
-            self._data_dir  = os.path.join(voc_dir, 'JPEGImages',self._split)
+            self._data_dir  = os.path.join(myData_dir, 'JPEGImages',self._split)
             # Annotations文件存放的文件夹
-            self.xml_path = os.path.join(voc_dir, "Annotations",self._split)
+            self.xml_path = os.path.join(myData_dir, "Annotations",self._split)
 
             self._detections, self._eval_ids = self._load_myData_annos()
             self._image_ids = list(self._detections.keys())
@@ -146,7 +147,7 @@ class myData(DETECTION):
                         bbox.append(bndbox['xmax'])
                         # h
                         bbox.append(bndbox['ymax'])
-                        category = self._name2voc[object_name]
+                        category = self._name2myData[object_name]
                         bbox.append(category)
                         res.append(bbox)
                         # print(res)

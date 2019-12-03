@@ -1,7 +1,7 @@
 {
   "system": {
     "dataset": "myData", 
-    "batch_size": 128, 
+    "batch_size": 32, 
     "sampling_function": "cornernet_saccade", 
     "train_split": "train", 
     "val_split": "valid",     
@@ -10,11 +10,11 @@
     "val_iter": 100,
     "opt_algo": "adam",
     "prefetch_size": 5,
-    "max_iter": 10000,
+    "max_iter": 100000,
     "stepsize": 200,  
-    "snapshot": 100,  
+    "snapshot": 5000,  
     "chunk_sizes": [
-      128
+      32
     ]  
   },
   "db": {
