@@ -120,7 +120,8 @@ class NetworkFactory(object):
         print("setting learning rate to: {}".format(lr))
         for param_group in self.optimizer.param_groups:
             param_group["lr"] = lr
-
+    
+    # 这个地方是要修改的！
     def load_pretrained_params(self, pretrained_model):
         print("loading from {}".format(pretrained_model))
         with open(pretrained_model, "rb") as f:

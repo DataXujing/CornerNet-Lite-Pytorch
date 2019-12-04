@@ -23,7 +23,7 @@ def change_cv2_draw(image,strs,local,sizes,colour):
 
     return image
 
-def draw_bboxes(image, bboxes, font_size=0.5, thresh=0.0, colors=None):  #thresh=0.5
+def draw_bboxes(image, bboxes, font_size=0.5, thresh=0.11, colors=None):  #thresh=0.5
     print("\033[4;32m " + "现在位置:{}/{}/.{}".format(os.getcwd(), os.path.basename(__file__),
                                                   sys._getframe().f_code.co_name) + "\033[0m")
     """Draws bounding boxes on an image.
@@ -63,29 +63,33 @@ def draw_bboxes(image, bboxes, font_size=0.5, thresh=0.0, colors=None):  #thresh
         for bbox in bboxes[cat_name][keep_inds]:
             bbox = bbox[0:4].astype(np.int32)
             if bbox[1] - cat_size[1] - 2 < 0:
-                cv2.rectangle(image,
-                              (bbox[0], bbox[1] + 2),
-                              (bbox[0] + cat_size[0], bbox[1] + cat_size[1] + 2),
-                              color, -1
-                              )
+                # cv2.rectangle(image,
+                #               (bbox[0], bbox[1] + 2),
+                #               (bbox[0] + cat_size[0], bbox[1] + cat_size[1] + 2),
+                #               color, -1
+                #               )
                 # cv2.putText(image, cat_name,
                 #             (bbox[0], bbox[1] + cat_size[1] + 2),
                 #             cv2.FONT_HERSHEY_SIMPLEX, font_size, (0, 0, 0), thickness=1
                 #             )
                 cat_label_name = id2label[cat_name]
-                image = change_cv2_draw(image,cat_label_name,(bbox[0], bbox[1] + cat_size[1] + 2),10,(0,0,255))  #image,strs,local,sizes,colour
+                # image = change_cv2_draw(image,cat_label_name,(bbox[0], bbox[1] + cat_size[1] + 2),10,(0,0,255))  #image,strs,local,sizes,colour
+                image = change_cv2_draw(image,cat_label_name,(bbox[0], bbox[1]),20,(255,0,0))  #image,strs,local,sizes,colour
+
             else:
-                cv2.rectangle(image,
-                              (bbox[0], bbox[1] - cat_size[1] - 2),
-                              (bbox[0] + cat_size[0], bbox[1] - 2),
-                              color, -1
-                              )
+                # cv2.rectangle(image,
+                #               (bbox[0], bbox[1] - cat_size[1] - 2),
+                #               (bbox[0] + cat_size[0], bbox[1] - 2),
+                #               color, -1
+                #               )
                 # cv2.putText(image, cat_name,
                 #             (bbox[0], bbox[1] - 2),
                 #             cv2.FONT_HERSHEY_SIMPLEX, font_size, (0, 0, 0), thickness=1
                 #             )
                 cat_label_name = id2label[cat_name]
-                image = change_cv2_draw(image,cat_label_name,(bbox[0], bbox[1] + cat_size[1] + 2),10,(0,0,255))  #image,strs,local,sizes,colour
+                # image = change_cv2_draw(image,cat_label_name,(bbox[0], bbox[1] + cat_size[1] + 2),20,(0,0,255))  #image,strs,local,sizes,colour
+                image = change_cv2_draw(image,cat_label_name,(bbox[0], bbox[1]),20,(255,0,0))  #image,strs,local,sizes,colour
+
             cv2.rectangle(image,
                           (bbox[0], bbox[1]),
                           (bbox[0] + bbox[2], bbox[1] + bbox[3]),

@@ -15,7 +15,8 @@
     "snapshot": 5000,  
     "chunk_sizes": [
       32
-    ]  
+    ],
+    "pretrain":"./pretrain/CornerNet_Saccade_500000.pkl"
   },
   "db": {
     "rand_scale_min": 0.5,  

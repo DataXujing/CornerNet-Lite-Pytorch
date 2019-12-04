@@ -231,7 +231,7 @@ filename,X1,Y1,X2,Y2,X3,Y3,X4,Y4,type
 
 
 ```
-myData
+data
 └─myData
     │  说明.txt
     │
@@ -594,7 +594,7 @@ python3 trainmyData.py CornerNet_Saccade
 python3 evaluatemyData.py <model> --testiter <iter> --split <split>
 
 # example
-python3 evaluatemyData.py CornerNet_Saccade --testiter 3000 --split valid
+python3 evaluatemyData.py CornerNet_Saccade --testiter 30000 --split valid
 ```
 
 注意要修改`<CornerNet-Lite dir>/core/test/CornerNet_Saccade.py`文件，如果想使用全新的配置文件而不是训练的配置文件进行推断，可以创建一个带有后缀的配置文件（比如：`<model>-<suffix>.json`),此时不需要重新创建`<model>-<suffix>.py`文件。
@@ -613,9 +613,11 @@ python3 evaluatemyData.py CornerNet --testiter <iter> --split <split> --suffix m
 
 ### 6.:whale:Demo
 
-**TODO**
+<!-- **TODO** -->
 
-<!-- ![](./demo_out.jpg) -->
+![](./demo_out.jpg)
+
+*训练迭代次数较少，效果并不好*
 
 ### 7.:tada:致谢
 
