@@ -615,9 +615,9 @@ python3 evaluatemyData.py CornerNet --testiter <iter> --split <split> --suffix m
 
 <!-- **TODO** -->
 
-![](./demo_out.jpg)
+<!--![](./demo_out.jpg) -->
 
-*训练迭代次数较少，效果并不好*
+<!-- *训练迭代次数较少，效果并不好* -->
 
 ### 7.:tada:致谢
 
